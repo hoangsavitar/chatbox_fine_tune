@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        #chat-container {
+            height: 300px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <ul id="messages"></ul>
+    </div>
+    <input id="m" autocomplete="off" />
+    <button onclick="sendMessage()">Send</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js" integrity="sha512-XeHsLCu3a9qFb6hL5f7J2Eyl4D/wQnZRVgXbJ7rfgfr6NK+B9wGz/2ohk9ikzqoBW3qWj8p7SBWVsbt1zU+hGA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var socket = io();
+        var messages = document.getElementById('messages');
+
+        socket.on('connect', function() {
+            console.log('Connected');
+        });
+
+        socket.on('response', function(msg){
+            addMessage(msg);
+        });
+
+        function sendMessage() {
+            var messageInput = document.getElementById('m');
+            var message = messageInput.value;
+            addMessage(message + "?");
+            socket.emit('message', message);
+            messageInput.value = '';
+        }
+
+        function addMessage(msg) {
+            var li = document.createElement('li');
+            li.textContent = msg;
+            messages.appendChild(li);
+            // Scroll to bottom
+            document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
+        }
+
+        socket.on('previous_messages', function(messages) {
+            messages.forEach(function(msg) {
+                addMessage(msg + "?");
+            });
+        });
+    </script>
+</body>
+</html>
