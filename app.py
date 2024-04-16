@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, jsonify
 
 
 import os
-os.environ["OPENAI_API_KEY"] ="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"
+os.environ["OPENAI_API_KEY"] =""
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
